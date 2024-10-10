@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Gaming Browser</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #1b1b1b;
+            color: white;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .neon-text {
+            color: #00ffcc;
+            text-shadow: 0 0 10px #00ffcc, 0 0 20px #00ffcc;
+        }
+
+        #webview-container {
+            width: 100%;
+            height: calc(100vh - 60px);
+        }
+
+        /* Sidebar styling */
+        #sidebar {
+            width: 60px;
+            height: 100vh;
+            background-color: #121212;
+            position: fixed;
+            left: 0;
+            top: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-around;
+            padding: 10px 0;
+        }
+
+        #sidebar a {
+            color: #ffffff;
+            font-size: 25px;
+            text-decoration: none;
+            padding: 15px;
+            display: block;
+            text-align: center;
+        }
+
+        #sidebar a:hover {
+            background-color: #333333;
+            border-radius: 10px;
+        }
+
+        /* Top bar for dragging */
+        #top-bar {
+            height: 30px;
+            background-color: #333;
+            color: white;
+            text-align: center;
+            line-height: 30px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            -webkit-app-region: drag; /* Allow the top bar to be draggable */
+        }
+
+        /* Customizable search bar */
+        #search-bar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 60px;
+            background-color: #121212;
+            padding: 0 15px;
+            position: fixed;
+            top: 40px; /* Adjusted to place it below the top bar */
+            left: 50%;
+            transform: translateX(-50%); /* Center the search bar */
+            width: 80%; /* Set width for the search bar */
+        }
+
+        #search-bar input {
+            flex-grow: 1; /* Allow the input to take the remaining space */
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            outline: none;
+            font-size: 16px;
+        }
+
+        #search-bar button {
+            padding: 10px;
+            margin-left: 10px;
+            background-color: #00ffcc;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #search-bar button:hover {
+            background-color: #008a66;
+        }
+
+        /* Settings Panel */
+        #settings-panel {
+            position: fixed;
+            top: 20%;
+            left: 50%;
+            transform: translate(-50%, -20%);
+            background-color: #2c2c2c;
+            padding: 20px;
+            width: 300px;
+            display: none;
+            border-radius: 10px;
+            z-index: 9999;
+        }
+
+        #settings-panel h3 {
+            color: #00ffcc;
+            margin-bottom: 15px;
+        }
+
+        #settings-panel label {
+            color: white;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        #settings-panel input,
+        #settings-panel select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            padding: 5px 10px;
+            color: white;
+            background-color: #00ffcc;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .btn:hover {
+            background-color: #008a66;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Top bar for dragging the application -->
+    <div id="top-bar">Ultimate Gaming Browser</div>
+
+    <!-- Sidebar with quick access icons -->
+    <div id="sidebar">
+        <a href="#" id="home">🏠</a>
+        <a href="#" id="games">🎮</a>
+        <a href="#" id="discord">💬</a>
+        <a href="#" id="twitch">📺</a>
+        <a href="#" id="settings">🔧</a>
+    </div>
+
+    <!-- Webview container for browsing -->
+    <div id="webview-container">
+        <webview id="game-webview" src="https://duckduckgo.com" style="width: 100%; height: calc(100vh - 100px);"></webview>
+    </div>
+
+    <!-- Settings Panel for customization -->
+    <div id="settings-panel">
+        <h3>Settings</h3>
+        <label for="theme-select">Theme</label>
+        <select id="theme-select">
+            <option value="dark">Dark Mode</option>
+            <option value="light">Light Mode</option>
+        </select>
+
+        <label for="font-size">Font Size</label>
+        <input type="range" id="font-size" min="12" max="24" value="16">
+
+        <button id="close-settings" class="btn">Close</button>
+    </div>
+
+    <script>
+        const webview = document.getElementById('game-webview');
+
+        // Search bar functionality
+        const searchInput = document.getElementById('search-input');
+        const searchButton = document.getElementById('search-button');
+
+        searchButton.addEventListener('click', () => {
+            let query = searchInput.value.trim();
+            if (query) {
+                webview.src = `https://duckduckgo.com/?q=${encodeURIComponent(query)}&t=h_`;
+            }
+        });
+
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                searchButton.click();
+            }
+        });
+
+        // Sidebar navigation buttons
+        document.getElementById('home').addEventListener('click', () => {
+            webview.src = 'https://duckduckgo.com';
+        });
+
+        document.getElementById('games').addEventListener('click', () => {
+            webview.src = 'https://itch.io';  // You can replace with your preferred gaming site
+        });
+
+        document.getElementById('discord').addEventListener('click', () => {
+            webview.src = 'https://discord.com/app';
+        });
+
+        document.getElementById('twitch').addEventListener('click', () => {
+            webview.src = 'https://www.twitch.tv';
+        });
+
+        document.getElementById('settings').addEventListener('click', () => {
+            document.getElementById('settings-panel').style.display = 'block';
+        });
+
+        document.getElementById('close-settings').addEventListener('click', () => {
+            document.getElementById('settings-panel').style.display = 'none';
+        });
+
+        // Apply theme
+        const themeSelect = document.getElementById('theme-select');
+        themeSelect.addEventListener('change', (e) => {
+            if (e.target.value === 'light') {
+                document.body.style.backgroundColor = 'white';
+                document.body.style.color = 'black';
+            } else {
+                document.body.style.backgroundColor = '#1b1b1b';
+                document.body.style.color = 'white';
+            }
+        });
+
+        // Change font size
+        const fontSizeInput = document.getElementById('font-size');
+        fontSizeInput.addEventListener('input', () => {
+            document.body.style.fontSize = `${fontSizeInput.value}px`;
+        });
+    </script>
+</body>
+
+</html>
